@@ -10,21 +10,7 @@ export class SignoutComponent implements OnInit {
 
   constructor(private authService: AuthService) { }
 
-  profile: any;
-
   ngOnInit(): void {
-  }
-
-  getHello() {
-    this.authService.hello().subscribe((val) => {
-      console.log('getHello: ', val);
-    });
-  }
-
-  getProfile() {
-    this.authService.getProfile().subscribe((value => {
-      this.profile = value;
-    }));
   }
 
 }
