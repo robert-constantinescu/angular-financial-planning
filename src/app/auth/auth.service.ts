@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
 import jwtDecode from 'jwt-decode';
 import {localStorageKeys} from './constants';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {localStorageKeys} from './constants';
 export class AuthService {
 
   private baseUrl = 'http://localhost:3000';
+  signedin$ = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) { }
 
@@ -17,6 +19,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, formValues).pipe(
       tap((response) => {
         this.saveTokenInLocalStorage(response.access_token);
+        this.signedin$.next(true);
       })
     );
   }
@@ -28,10 +31,6 @@ export class AuthService {
     localStorage.setItem(localStorageKeys.expirationTime, tokenDecoded.exp);
   }
 
-  decodeToken(jwtToken: string): JwtData {
-    return jwtDecode(jwtToken);
-  }
-
   hello() {
     return this.http.get(`${this.baseUrl}/hello`);
   }
@@ -39,6 +38,21 @@ export class AuthService {
   getProfile() {
     return this.http.get(`${this.baseUrl}/profile`);
   }
+
+  isSignedIn(): boolean {
+    const currentTime = Date.now();
+    const jwtExpTime = Date.parse(localStorage.getItem(localStorageKeys.expirationTime));
+    if (currentTime > jwtExpTime) {
+      localStorage.removeItem(localStorageKeys.jwt);
+      return false;
+    }
+    return true;
+  }
+
+  decodeToken(jwtToken: string): JwtData {
+    return jwtDecode(jwtToken);
+  }
+
 }
 
 

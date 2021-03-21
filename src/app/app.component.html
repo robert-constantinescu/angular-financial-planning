@@ -1,9 +1,11 @@
 <div class="ui container">
   <div class="ui secondary pointing menu">
     <a routerLink="/" class="ui item">Financial Planning</a>
-    <a routerLink="/income" class="ui item">Income</a>
+    <ng-container *ngIf="signedin$ | async">
+      <a routerLink="/income" class="ui item">Income</a>
+    </ng-container>
     <div class="right menu">
-      <a routerLink="auth/signin" class="ui item">Sign In</a>
+      <a *ngIf="!(signedin$ | async)" routerLink="auth/signin" class="ui item">Sign In</a>
       <a routerLink="auth/signout" class="ui item">Sign Out</a>
     </div>
   </div>
