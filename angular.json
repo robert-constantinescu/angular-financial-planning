@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "angular-financial-planning"
+    }
+  },
+  "defaultProject": "angular-financial-planning",
+  "cli": {
+    "analytics": false
+  }
 }
