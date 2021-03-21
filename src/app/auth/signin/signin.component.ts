@@ -12,8 +12,8 @@ export class SigninComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   signinForm = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
+    username: new FormControl('richie'),
+    password: new FormControl('admin'),
   });
 
   ngOnInit(): void {
