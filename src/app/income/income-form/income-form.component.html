@@ -3,53 +3,58 @@
   <div class="card-body">
     <div id="table" class="table-editable">
       <form [formGroup]="incomeTable">
-        <table class="table table-border" [ngClass]="{'table-dark': mode}">
+        <table class="w3-table w3-striped w3-bordered" [ngClass]="{'table-dark': mode}">
           <thead class="text-nowrap">
             <th>Income Type</th>
             <th>Current Amount</th>
             <th>Goal Amount</th>
             <th>Recurrence</th>
             <th>Yearly Amount</th>
+            <th class="text-center">Actions</th>
           </thead>
           <tbody>
           <ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls ; let i=index">
             <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
               <td>
-                <mat-form-field>
-                  <input matInput type="text" formControlName="type" class="ui input focus">
-                </mat-form-field>
+                <div class="ui input focus">
+                  <input type="text" formControlName="type" class="ui input focus">
+                </div>
               </td>
               <td>
-                <mat-form-field>
-                  <input matInput type="number" formControlName="currentAmount">
-                </mat-form-field>
+                <div class="ui input focus">
+                  <input type="number" formControlName="currentAmount">
+                </div>
               </td>
               <td>
-                <mat-form-field>
-                  <input matInput type="number" formControlName="goalAmount">
-                </mat-form-field>
+                <div class="ui input focus">
+                  <input type="number" formControlName="goalAmount">
+                </div>
               </td>
               <td>
-                <mat-form-field>
-                  <mat-select formControlName="recurrence">
-                    <mat-option value="DAILY">DAILY</mat-option>
-                    <mat-option value="WEEKLY">WEEKLY</mat-option>
-                    <mat-option value="BI-MONTHLY">BI-MONTHLY</mat-option>
-                    <mat-option value="MONTHLY">MONTHLY</mat-option>
-                    <mat-option value="QUARTERLY">QUARTERLY</mat-option>
-                    <mat-option value="SEMESTRIAL">SEMESTRIAL</mat-option>
-                    <mat-option value="YEARLY">YEARLY</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                <div class="ui input focus">
+                  <select formControlName="recurrence" class="ui search dropdown">
+                    <option value="DAILY">DAILY</option>
+                    <option value="WEEKLY">WEEKLY</option>
+                    <option value="BI-MONTHLY">BI-MONTHLY</option>
+                    <option value="MONTHLY">MONTHLY</option>
+                    <option value="QUARTERLY">QUARTERLY</option>
+                    <option value="SEMESTRIAL">SEMESTRIAL</option>
+                    <option value="YEARLY">YEARLY</option>
+                  </select>
+                </div>
               </td>
               <td>
-                <mat-form-field>
-                  <input matInput type="number" formControlName="yearlyAmount" >
-                </mat-form-field>
+                <div class="ui input focus">
+                  <input type="number" formControlName="yearlyAmount" >
+                </div>
               </td>
-              <td>
-                <mat-icon class="w3-button w3-blue w3-responsive" (click)="deleteRow(i)">Delete</mat-icon>
-                <mat-icon class="w3-button w3-red w3-responsive" (click)="doneRow(group)">Save</mat-icon>
+              <td class="w3-left">
+                <span class="table-remove">
+                  <button type="button" size="sm" class="w3-button w3-blue w3-responsive" (click)="doneRow(group)" style="margin-bottom: 5px;">Edit</button>
+                </span>
+                  <span class="table-remove">
+                  <button type="button" size="sm" class="w3-button w3-red w3-responsive" (click)="deleteRow(i)">Remove</button>
+                </span>
               </td>
             </tr>
             <tr *ngIf="!group.get('isEditable').value">
@@ -68,16 +73,16 @@
               <td>
                 {{group.get('yearlyAmount').value}}
               </td>
-              <td>
-                <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>
-              </td>
+<!--              <td>-->
+<!--                <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>-->
+<!--              </td>-->
             </tr>
           </ng-container>
           </tbody>
         </table>
         <div class="action-container">
-          <button mat-raised-button type="submit" (click)="addRow()">Add Income</button>
-          <button mat-raised-button [disabled]="incomeTable.invalid" type="submit" (click)="submitForm()">Submit</button>
+          <button type="submit" (click)="addRow()">Add Income</button>
+          <button [disabled]="incomeTable.invalid" type="submit" (click)="submitForm()">Submit</button>
         </div>
       </form>
     </div>
