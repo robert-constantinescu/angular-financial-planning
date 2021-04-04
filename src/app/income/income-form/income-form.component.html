@@ -2,41 +2,84 @@
   <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Income table</h3>
   <div class="card-body">
     <div id="table" class="table-editable">
-      <table class="w3-table w3-striped w3-bordered">
-        <tr>
-          <th class="text-center">Income Type</th>
-          <th class="text-center">Current Amount</th>
-          <th class="text-center">Goal Amount</th>
-          <th class="text-center">Recurrence</th>
-          <th class="text-center">Yearly Amount</th>
-          <th class="text-center">Actions</th>
-        </tr>
-        <tr *ngFor="let income of incomeList; let id = index">
-          <td class="text-center">
-            <span (keyup)="changeValue(id, 'type', $event)" (blur)="updateList(id, 'type', $event)" contenteditable="true">{{income.type}}</span>
-          </td>
-          <td class="text-center">
-            <span contenteditable="true" (keyup)="changeValue(id, 'currentAmount', $event)" (blur)="updateList(id, 'currentAmount', $event)">{{income.currentAmount}}</span>
-          </td>
-          <td class="text-center">
-            <span contenteditable="true" (keyup)="changeValue(id, 'goal', $event)" (blur)="updateList(id, 'goal', $event)">{{income.goal}}</span>
-          </td>
-          <td class="text-center">
-            <span contenteditable="true" (keyup)="changeValue(id, 'recurrence', $event)" (blur)="updateList(id, 'recurrence', $event)">{{income.recurrence}}</span>
-          </td>
-          <td class="text-center">
-            <span contenteditable="true" (keyup)="changeValue(id, 'yearlyAmount', $event)" (blur)="updateList(id, 'yearlyAmount', $event)">{{income.yearlyAmount}}</span>
-          </td>
-          <td class="w3-left">
-              <span class="table-remove">
-                <button type="button" size="sm" class="w3-button w3-blue w3-responsive" (click)="remove(id)" style="margin-bottom: 5px;">Edit</button>
-              </span>
-            <span class="table-remove">
-                <button type="button" size="sm" class="w3-button w3-red w3-responsive" (click)="remove(id)">Remove</button>
-              </span>
-          </td>
-        </tr>
-      </table>
+      <form [formGroup]="incomeTable">
+        <table class="table table-border" [ngClass]="{'table-dark': mode}">
+          <thead class="text-nowrap">
+            <th>Income Type</th>
+            <th>Current Amount</th>
+            <th>Goal Amount</th>
+            <th>Recurrence</th>
+            <th>Yearly Amount</th>
+          </thead>
+          <tbody>
+          <ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls ; let i=index">
+            <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
+              <td>
+                <mat-form-field>
+                  <input matInput type="text" formControlName="type" class="ui input focus">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput type="number" formControlName="currentAmount">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput type="number" formControlName="goalAmount">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <mat-select formControlName="recurrence">
+                    <mat-option value="DAILY">DAILY</mat-option>
+                    <mat-option value="WEEKLY">WEEKLY</mat-option>
+                    <mat-option value="BI-MONTHLY">BI-MONTHLY</mat-option>
+                    <mat-option value="MONTHLY">MONTHLY</mat-option>
+                    <mat-option value="QUARTERLY">QUARTERLY</mat-option>
+                    <mat-option value="SEMESTRIAL">SEMESTRIAL</mat-option>
+                    <mat-option value="YEARLY">YEARLY</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput type="number" formControlName="yearlyAmount" >
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-icon class="w3-button w3-blue w3-responsive" (click)="deleteRow(i)">Delete</mat-icon>
+                <mat-icon class="w3-button w3-red w3-responsive" (click)="doneRow(group)">Save</mat-icon>
+              </td>
+            </tr>
+            <tr *ngIf="!group.get('isEditable').value">
+              <td>
+                {{group.get('type').value}}
+              </td>
+              <td>
+                {{group.get('currentAmount').value}}
+              </td>
+              <td>
+                {{group.get('goalAmount').value}}
+              </td>
+              <td>
+                {{group.get('recurrence').value}}
+              </td>
+              <td>
+                {{group.get('yearlyAmount').value}}
+              </td>
+              <td>
+                <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+        <div class="action-container">
+          <button mat-raised-button type="submit" (click)="addRow()">Add Income</button>
+          <button mat-raised-button [disabled]="incomeTable.invalid" type="submit" (click)="submitForm()">Submit</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

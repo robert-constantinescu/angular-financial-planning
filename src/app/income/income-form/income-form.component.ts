@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @Component({
   selector: 'app-income-form',
@@ -9,7 +11,6 @@ import {IncomeDto} from '../income-dto';
 })
 export class IncomeFormComponent implements OnInit {
 
-  editField: string;
   incomeList: IncomeDto[] = [
     { id: 1, type: 'SALARY', currentAmount: 30, goal: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
     { id: 2, type: 'SALARY', currentAmount: 45, goal: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
@@ -26,28 +27,71 @@ export class IncomeFormComponent implements OnInit {
     { id: 5, type: 'INTEREST', currentAmount: 31, goal: 48, recurrence: 'United Kingdom', yearlyAmount: 0 }
   ];
 
-  constructor() { }
+  constructor(private fb: FormBuilder) { }
 
-  ngOnInit() {
+  incomeTable: FormGroup;
+  control: FormArray;
+  mode: boolean;
+  touchedRows: any;
 
+  ngOnInit(): void {
+    this.touchedRows = [];
+    this.incomeTable = this.fb.group({
+      tableRows: this.fb.array([])
+    });
+    this.addRow();
   }
 
-  updateList(id: number, property: string, event: any) {
-    const editField = event.target.textContent;
-    this.incomeList[id][property] = editField;
+  ngAfterOnInit() {
+    this.control = this.incomeTable.get('tableRows') as FormArray;
   }
 
-  remove(id: any) {
-    this.awaitingPersonList.push(this.incomeList[id]);
-    this.incomeList.splice(id, 1);
+  initiateForm(): FormGroup {
+    return this.fb.group({
+      type: [''],
+      currentAmount: [''],
+      goalAmount: [''],
+      recurrence: [''],
+      yearlyAmount: [''],
+      isEditable: [true]
+    });
   }
 
-  add() {
-    this.incomeList.push({ id: 0, type: '', currentAmount: 0, goal: 0, recurrence: '', yearlyAmount: 0 });
+  addRow() {
+    const control =  this.incomeTable.get('tableRows') as FormArray;
+    control.push(this.initiateForm());
   }
 
-  changeValue(id: number, property: string, event: any) {
-    this.editField = event.target.textContent;
+  deleteRow(index: number) {
+    const control =  this.incomeTable.get('tableRows') as FormArray;
+    control.removeAt(index);
+  }
+
+  editRow(group: FormGroup) {
+    group.get('isEditable').setValue(true);
+  }
+
+  doneRow(group: FormGroup) {
+    group.get('isEditable').setValue(false);
+  }
+
+  saveUserDetails() {
+    console.log(this.incomeTable.value);
+  }
+
+  get getFormControls() {
+    const control = this.incomeTable.get('tableRows') as FormArray;
+    return control;
+  }
+
+  submitForm() {
+    const control = this.incomeTable.get('tableRows') as FormArray;
+    this.touchedRows = control.controls.filter(row => row.touched).map(row => row.value);
+    console.log(this.touchedRows);
+  }
+
+  toggleTheme() {
+    this.mode = !this.mode;
   }
 
 

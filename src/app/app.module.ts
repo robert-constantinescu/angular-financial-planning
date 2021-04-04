@@ -19,7 +19,7 @@ import {CommonModule} from './common/common.module';
     HttpClientModule,
     AuthModule,
     IncomeModule,
-    CommonModule
+    CommonModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
