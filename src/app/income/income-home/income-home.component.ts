@@ -11,11 +11,6 @@ export class IncomeHomeComponent implements OnInit {
 
   constructor(private authService: AuthService) { }
 
-  incomeForm = new FormGroup({
-    name: new FormControl(''),
-    amount: new FormControl(''),
-    recurrence: new FormControl('')
-  });
 
   profile: any;
   date: Date;

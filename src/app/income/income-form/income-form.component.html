@@ -1,1 +1,42 @@
-<p>income-form works!</p>
+<div class="w3-responsive w3-card-4" style="margin-top: 10px;">
+  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Income table</h3>
+  <div class="card-body">
+    <div id="table" class="table-editable">
+      <table class="w3-table w3-striped w3-bordered">
+        <tr>
+          <th class="text-center">Income Type</th>
+          <th class="text-center">Current Amount</th>
+          <th class="text-center">Goal Amount</th>
+          <th class="text-center">Recurrence</th>
+          <th class="text-center">Yearly Amount</th>
+          <th class="text-center">Actions</th>
+        </tr>
+        <tr *ngFor="let income of incomeList; let id = index">
+          <td class="text-center">
+            <span (keyup)="changeValue(id, 'type', $event)" (blur)="updateList(id, 'type', $event)" contenteditable="true">{{income.type}}</span>
+          </td>
+          <td class="text-center">
+            <span contenteditable="true" (keyup)="changeValue(id, 'currentAmount', $event)" (blur)="updateList(id, 'currentAmount', $event)">{{income.currentAmount}}</span>
+          </td>
+          <td class="text-center">
+            <span contenteditable="true" (keyup)="changeValue(id, 'goal', $event)" (blur)="updateList(id, 'goal', $event)">{{income.goal}}</span>
+          </td>
+          <td class="text-center">
+            <span contenteditable="true" (keyup)="changeValue(id, 'recurrence', $event)" (blur)="updateList(id, 'recurrence', $event)">{{income.recurrence}}</span>
+          </td>
+          <td class="text-center">
+            <span contenteditable="true" (keyup)="changeValue(id, 'yearlyAmount', $event)" (blur)="updateList(id, 'yearlyAmount', $event)">{{income.yearlyAmount}}</span>
+          </td>
+          <td class="w3-left">
+              <span class="table-remove">
+                <button type="button" size="sm" class="w3-button w3-blue w3-responsive" (click)="remove(id)" style="margin-bottom: 5px;">Edit</button>
+              </span>
+            <span class="table-remove">
+                <button type="button" size="sm" class="w3-button w3-red w3-responsive" (click)="remove(id)">Remove</button>
+              </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
