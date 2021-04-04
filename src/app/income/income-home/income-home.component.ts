@@ -1,5 +1,6 @@
 import {AfterViewChecked, Component, OnInit} from '@angular/core';
 import {AuthService} from '../../auth/auth.service';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-income-home',
@@ -9,6 +10,12 @@ import {AuthService} from '../../auth/auth.service';
 export class IncomeHomeComponent implements OnInit {
 
   constructor(private authService: AuthService) { }
+
+  incomeForm = new FormGroup({
+    name: new FormControl(''),
+    amount: new FormControl(''),
+    recurrence: new FormControl('')
+  });
 
   profile: any;
   date: Date;
