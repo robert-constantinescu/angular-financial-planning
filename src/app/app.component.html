@@ -1,13 +1,33 @@
-<div class="ui container">
-  <div class="ui secondary pointing menu">
-    <a routerLink="/" class="ui item">Financial Planning</a>
-    <ng-container *ngIf="signedin$ | async">
-      <a routerLink="/income" class="ui item">Income</a>
-    </ng-container>
-    <div class="right menu">
-      <a *ngIf="!(signedin$ | async)" routerLink="auth/signin" class="ui item">Sign In</a>
-      <a routerLink="auth/signout" class="ui item">Sign Out</a>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html>
+<title>Manager your way to FIRE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+</style>
+<body class="w3-light-grey">
+
+
+<!-- Sidebar/menu -->
+<app-dashboard-menu></app-dashboard-menu>
+
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:300px;margin-top:43px;">
+
+  <!-- Main Page -->
   <router-outlet></router-outlet>
+
+  <!-- Footer -->
+  <footer class="w3-container w3-padding-16 w3-light-grey">
+    <h4>FOOTER</h4>
+    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+  </footer>
+
+  <!-- End page content -->
 </div>
+
+</body>
+</html>

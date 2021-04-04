@@ -7,6 +7,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthModule} from './auth/auth.module';
 import {JwtInterceptor} from './auth/jwt.interceptor';
 import {IncomeModule} from './income/income.module';
+import {CommonModule} from './common/common.module';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,8 @@ import {IncomeModule} from './income/income.module';
     AppRoutingModule,
     HttpClientModule,
     AuthModule,
+    IncomeModule,
+    CommonModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewChecked, Component, OnInit} from '@angular/core';
 import {AuthService} from '../../auth/auth.service';
 
 @Component({
@@ -11,6 +11,7 @@ export class IncomeHomeComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   profile: any;
+  date: Date;
 
   ngOnInit(): void {
   }
@@ -18,6 +19,7 @@ export class IncomeHomeComponent implements OnInit {
   getHello() {
     this.authService.hello().subscribe((val) => {
       console.log('getHello: ', val);
+      this.date = new Date();
     });
   }
 
@@ -26,6 +28,10 @@ export class IncomeHomeComponent implements OnInit {
       this.profile = value;
     }));
   }
+
+  // ngAfterViewChecked() {
+  //   this.date = new Date();
+  // }
 
 
 }

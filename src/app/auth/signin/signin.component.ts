@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AuthService} from '../auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-signin',
@@ -9,7 +10,7 @@ import {AuthService} from '../auth.service';
 })
 export class SigninComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   signinForm = new FormGroup({
     username: new FormControl('richie'),
@@ -19,11 +20,15 @@ export class SigninComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // ngAfterViewChecked(): void {
+  //
+  // }
+
   onSignin() {
     console.log('On signin');
     this.authService.signin(this.signinForm.value).subscribe(
       value => {
-        console.log(value);
+        this.router.navigateByUrl('/home');
       }
     );
   }
