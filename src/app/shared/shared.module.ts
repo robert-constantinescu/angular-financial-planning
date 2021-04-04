@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { DashboardMenuComponent } from './dashboard-menu/dashboard-menu.component';
 import { HomeComponent } from './home/home.component';
-import {CommonRoutingModule} from './common-routing.module';
+import {SharedRoutingModule} from './shared-routing.module';
 
 
 
@@ -11,7 +11,7 @@ import {CommonRoutingModule} from './common-routing.module';
         DashboardMenuComponent,
     ],
     imports: [
-      CommonRoutingModule
+      SharedRoutingModule
     ]
 })
-export class CommonModule { }
+export class SharedModule { }

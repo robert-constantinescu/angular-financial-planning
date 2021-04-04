@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: 'home',
     canLoad: [AuthGuard],
-    loadChildren: () => import('./common/common.module').then(mod => mod.CommonModule)
+    loadChildren: () => import('./shared/shared.module').then(mod => mod.CommonModule)
   }
 ];
 

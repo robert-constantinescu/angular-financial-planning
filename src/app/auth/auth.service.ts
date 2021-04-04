@@ -4,13 +4,14 @@ import {tap} from 'rxjs/operators';
 import jwtDecode from 'jwt-decode';
 import {localStorageKeys} from './constants';
 import {BehaviorSubject} from 'rxjs';
+import {AppSettings} from '../shared/app-settings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = AppSettings.BASE_URL;
   signedin$ = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) { }
