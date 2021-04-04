@@ -3,6 +3,14 @@
   <div class="card-body">
     <div id="table" class="table-editable">
       <form [formGroup]="incomeTable">
+        <div class="action-container">
+          <span class="table-remove" >
+            <button type="button" class="w3-button w3-blue w3-responsive" (click)="addRow()" style="margin-bottom: 5px;">Add</button>
+          </span>
+          <span class="table-remove" >
+            <button [disabled]="incomeTable.invalid" type="submit" (click)="submitForm()" class="button primary w3-green">Submit</button>
+          </span>
+        </div>
         <table class="w3-table w3-striped w3-bordered" [ngClass]="{'table-dark': mode}">
           <thead class="text-nowrap">
             <th>Income Type</th>
@@ -49,8 +57,8 @@
                 </div>
               </td>
               <td class="w3-left">
-                <span class="table-remove">
-                  <button type="button" size="sm" class="w3-button w3-blue w3-responsive" (click)="doneRow(group)" style="margin-bottom: 5px;">Edit</button>
+                <span class="table-remove" >
+                  <button type="button" class="w3-button w3-blue w3-responsive" (click)="addRow()" style="margin-bottom: 5px;">Add</button>
                 </span>
                   <span class="table-remove">
                   <button type="button" size="sm" class="w3-button w3-red w3-responsive" (click)="deleteRow(i)">Remove</button>
@@ -80,11 +88,10 @@
           </ng-container>
           </tbody>
         </table>
-        <div class="action-container">
-          <button type="submit" (click)="addRow()">Add Income</button>
-          <button [disabled]="incomeTable.invalid" type="submit" (click)="submitForm()">Submit</button>
-        </div>
       </form>
     </div>
+  </div>
+  <div>
+    {{incomeTable?.value | json}}
   </div>
 </div>
