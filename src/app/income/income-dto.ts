@@ -4,7 +4,7 @@ export interface IncomeDto {
  currentAmount: number;
  yearlyAmount: number;
  recurrence: string;
- goal: number;
+ goalAmount: number;
  id?: number;
  username?: string;
 

@@ -7,7 +7,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthModule} from './auth/auth.module';
 import {JwtInterceptor} from './auth/jwt.interceptor';
 import {IncomeModule} from './income/income.module';
-import {CommonModule} from './shared/shared.module';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +19,7 @@ import {CommonModule} from './shared/shared.module';
     HttpClientModule,
     AuthModule,
     IncomeModule,
-    CommonModule,
+    SharedModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}

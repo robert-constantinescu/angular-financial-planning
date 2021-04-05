@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
-import jwtDecode from 'jwt-decode';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 import {localStorageKeys} from './constants';
 import {BehaviorSubject} from 'rxjs';
-import {AppSettings} from '../shared/app-settings';
+import {ConfigurationConstants} from '../shared/configuration-constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private baseUrl = AppSettings.BASE_URL;
+  private authApi = `${ConfigurationConstants.BASE_URL}/auth`;
+  private tokenDecode: JwtPayload;
   signedin$ = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) { }
 
   signin(formValues: SigninForm) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, formValues).pipe(
+    return this.http.post<AuthResponse>(`${this.authApi}/login`, formValues).pipe(
       tap((response) => {
         this.saveTokenInLocalStorage(response.access_token);
         this.signedin$.next(true);
@@ -28,16 +29,16 @@ export class AuthService {
   saveTokenInLocalStorage(jwtToken: string) {
     const tokenDecoded = this.decodeToken(jwtToken);
     localStorage.setItem(localStorageKeys.jwt, jwtToken);
-    localStorage.setItem(localStorageKeys.username, tokenDecoded.username);
-    localStorage.setItem(localStorageKeys.expirationTime, tokenDecoded.exp);
+    localStorage.setItem(localStorageKeys.expirationTime, String(tokenDecoded.exp));
+    localStorage.setItem(localStorageKeys.sub, tokenDecoded.sub);
   }
 
   hello() {
-    return this.http.get(`${this.baseUrl}/hello`);
+    return this.http.get(`${this.authApi}/hello`);
   }
 
   getProfile() {
-    return this.http.get(`${this.baseUrl}/profile`);
+    return this.http.get(`${this.authApi}/profile`);
   }
 
   isSignedIn(): boolean {
@@ -50,7 +51,7 @@ export class AuthService {
     return true;
   }
 
-  decodeToken(jwtToken: string): JwtData {
+  decodeToken(jwtToken: string): JwtPayload {
     return jwtDecode(jwtToken);
   }
 
@@ -70,4 +71,5 @@ interface JwtData {
   username: string;
   iat: string;
   exp: string;
+  sub: string;
 }

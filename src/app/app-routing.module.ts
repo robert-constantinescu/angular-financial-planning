@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {AuthGuard} from './auth/auth.guard';
-import {SigninComponent} from './auth/signin/signin.component';
 
 
 const routes: Routes = [
@@ -14,7 +13,7 @@ const routes: Routes = [
   {
     path: 'home',
     canLoad: [AuthGuard],
-    loadChildren: () => import('./shared/shared.module').then(mod => mod.CommonModule)
+    loadChildren: () => import('./shared/shared.module').then(mod => mod.SharedModule)
   }
 ];
 

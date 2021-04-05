@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {IncomeService} from '../income.service';
 
 
 @Component({
@@ -12,27 +13,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export class IncomeFormComponent implements OnInit {
 
   incomeList: IncomeDto[] = [
-    { id: 1, type: 'SALARY', currentAmount: 30, goal: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
-    { id: 2, type: 'SALARY', currentAmount: 45, goal: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
-    { id: 3, type: 'DIVIDENDS', currentAmount: 26, goal: 61, recurrence: 'YEARLY', yearlyAmount: 0 },
-    { id: 4, type: 'RENT', currentAmount: 30, goal: 57, recurrence: 'YEARLY', yearlyAmount: 0 },
-    { id: 5, type: 'INTEREST', currentAmount: 31, goal: 48, recurrence: 'QUARTERLY', yearlyAmount: 0 },
+    { id: 1, type: 'SALARY', currentAmount: 30, goalAmount: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
+    { id: 2, type: 'SALARY', currentAmount: 45, goalAmount: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
+    { id: 3, type: 'DIVIDENDS', currentAmount: 26, goalAmount: 61, recurrence: 'YEARLY', yearlyAmount: 0 },
+    { id: 4, type: 'RENT', currentAmount: 30, goalAmount: 57, recurrence: 'YEARLY', yearlyAmount: 0 },
+    { id: 5, type: 'INTEREST', currentAmount: 31, goalAmount: 48, recurrence: 'QUARTERLY', yearlyAmount: 0 },
   ];
 
-  awaitingPersonList: IncomeDto[] = [
-    { id: 1, type: 'SALARY', currentAmount: 30, goal: 45, recurrence: 'Spain', yearlyAmount: 0 },
-    { id: 2, type: 'SALARY', currentAmount: 45, goal: 45, recurrence: 'USA', yearlyAmount: 0 },
-    { id: 3, type: 'DIVIDENDS', currentAmount: 26, goal: 61, recurrence: 'Germany', yearlyAmount: 0 },
-    { id: 4, type: 'RENT', currentAmount: 30, goal: 57, recurrence: 'Spain', yearlyAmount: 0 },
-    { id: 5, type: 'INTEREST', currentAmount: 31, goal: 48, recurrence: 'United Kingdom', yearlyAmount: 0 }
-  ];
-
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private incomeService: IncomeService) { }
 
   incomeTable: FormGroup;
   control: FormArray;
   mode: boolean;
-  touchedRows: any;
+  touchedRows: IncomeDto[];
 
   ngOnInit(): void {
     this.touchedRows = [];
@@ -53,7 +46,8 @@ export class IncomeFormComponent implements OnInit {
       goalAmount: [''],
       recurrence: [''],
       yearlyAmount: [''],
-      isEditable: [true]
+      isEditable: [true],
+      userId: [localStorage.getItem('sub')]
     });
   }
 
@@ -88,6 +82,7 @@ export class IncomeFormComponent implements OnInit {
     const control = this.incomeTable.get('tableRows') as FormArray;
     this.touchedRows = control.controls.filter(row => row.touched).map(row => row.value);
     console.log(this.touchedRows);
+    this.incomeService.saveIncomeList(this.touchedRows).subscribe();
   }
 
   toggleTheme() {
