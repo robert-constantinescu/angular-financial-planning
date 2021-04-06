@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
@@ -18,13 +18,14 @@ export class IncomeFormComponent implements OnInit {
   formArray = new FormArray([]);
   dataSource = this.formArray.controls;
   columns: number = this.displayedFields.length;
-
+  @Input() incomeList: IncomeDto[];
 
   constructor(private incomeService: IncomeService) {
   }
 
   ngOnInit(): void {
-    this.addDataInTable()
+    console.log(this.incomeList);
+    this.addDataInTable();
   }
 
   addRow() {
@@ -38,16 +39,13 @@ export class IncomeFormComponent implements OnInit {
   }
 
   addDataInTable() {
-
-    const data = this.incomeService.incomeList;
-    for (const income of data) {
-      const newGroup = new FormGroup({});
-      this.displayedFields.forEach(field => {
-        newGroup.addControl(field, new FormControl(income[field]));
-      });
-      this.formArray.push(newGroup);
-    }
-
+      for (const income of this.incomeList) {
+        const newGroup = new FormGroup({});
+        this.displayedFields.forEach(field => {
+          newGroup.addControl(field, new FormControl(income[field]));
+        });
+        this.formArray.push(newGroup);
+      }
   }
 
 
@@ -57,6 +55,14 @@ export class IncomeFormComponent implements OnInit {
   }
 
   onSubmit(dataSource) {
-    console.log(dataSource);
+    const updatedIncome: IncomeDto[] = [];
+    for ( const field of this.formArray.controls) {
+      if (field.dirty) {
+        updatedIncome.push(field.value);
+      }
+    }
+
+    this.incomeService.saveIncomeList(updatedIncome);
+
   }
 }

@@ -1,6 +1,8 @@
 import {AfterViewChecked, Component, OnInit} from '@angular/core';
 import {AuthService} from '../../auth/auth.service';
 import {FormControl, FormGroup} from '@angular/forms';
+import {IncomeDto} from '../income-dto';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-income-home',
@@ -9,11 +11,21 @@ import {FormControl, FormGroup} from '@angular/forms';
 })
 export class IncomeHomeComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
 
+  incomeList: IncomeDto[];
 
   profile: any;
   date: Date;
+
+
+  constructor(private authService: AuthService,
+              private activeRoute: ActivatedRoute) {
+    this.activeRoute.data.subscribe( (data) => {
+      console.log(data.incomeList);
+      this.incomeList = data.incomeList;
+      }
+    )
+  }
 
   ngOnInit(): void {
   }
