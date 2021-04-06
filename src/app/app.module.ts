@@ -8,13 +8,16 @@ import {AuthModule} from './auth/auth.module';
 import {JwtInterceptor} from './auth/jwt.interceptor';
 import {IncomeModule} from './income/income.module';
 import {SharedModule} from './shared/shared.module';
+import {CommonModule} from '@angular/common';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule,
+    CommonModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     AuthModule,

@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {IncomeService} from '../income.service';
 
 
@@ -12,82 +11,52 @@ import {IncomeService} from '../income.service';
 })
 export class IncomeFormComponent implements OnInit {
 
-  incomeList: IncomeDto[] = [
-    { id: 1, type: 'SALARY', currentAmount: 30, goalAmount: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
-    { id: 2, type: 'SALARY', currentAmount: 45, goalAmount: 45, recurrence: 'MONTHLY', yearlyAmount: 0 },
-    { id: 3, type: 'DIVIDENDS', currentAmount: 26, goalAmount: 61, recurrence: 'YEARLY', yearlyAmount: 0 },
-    { id: 4, type: 'RENT', currentAmount: 30, goalAmount: 57, recurrence: 'YEARLY', yearlyAmount: 0 },
-    { id: 5, type: 'INTEREST', currentAmount: 31, goalAmount: 48, recurrence: 'QUARTERLY', yearlyAmount: 0 },
-  ];
+  displayedColumns: string[] = ['id', 'type', 'currentAmount', 'goalAmount', 'recurrence', 'yearlyAmount', 'delete'];
+  displayedHead: string[] = ['Id', 'Type', 'Current Amount', 'Goal Amount', 'Recurrence', 'Yearly Amount'];
+  displayedFields: string[] = ['id', 'type', 'currentAmount', 'goalAmount', 'recurrence', 'yearlyAmount'];
+  columnSelect = -1;
+  formArray = new FormArray([]);
+  dataSource = this.formArray.controls;
+  columns: number = this.displayedFields.length;
 
-  constructor(private fb: FormBuilder, private incomeService: IncomeService) { }
 
-  incomeTable: FormGroup;
-  control: FormArray;
-  mode: boolean;
-  touchedRows: IncomeDto[];
+  constructor(private incomeService: IncomeService) {
+  }
 
   ngOnInit(): void {
-    this.touchedRows = [];
-    this.incomeTable = this.fb.group({
-      tableRows: this.fb.array([])
-    });
-    this.addRow();
-  }
-
-  ngAfterOnInit() {
-    this.control = this.incomeTable.get('tableRows') as FormArray;
-  }
-
-  initiateForm(): FormGroup {
-    return this.fb.group({
-      type: [''],
-      currentAmount: [''],
-      goalAmount: [''],
-      recurrence: [''],
-      yearlyAmount: [''],
-      isEditable: [true],
-      userId: [localStorage.getItem('sub')]
-    });
+    this.addDataInTable()
   }
 
   addRow() {
-    const control =  this.incomeTable.get('tableRows') as FormArray;
-    control.push(this.initiateForm());
+    const newGroup = new FormGroup({});
+    this.displayedFields.forEach(x => {
+      newGroup.addControl(x, new FormControl());
+    });
+
+    this.formArray.push(newGroup);
+    this.dataSource = [...this.formArray.controls];
   }
+
+  addDataInTable() {
+
+    const data = this.incomeService.incomeList;
+    for (const income of data) {
+      const newGroup = new FormGroup({});
+      this.displayedFields.forEach(field => {
+        newGroup.addControl(field, new FormControl(income[field]));
+      });
+      this.formArray.push(newGroup);
+    }
+
+  }
+
 
   deleteRow(index: number) {
-    const control =  this.incomeTable.get('tableRows') as FormArray;
-    control.removeAt(index);
+    this.formArray.removeAt(index);
+    this.dataSource = [...this.formArray.controls];
   }
 
-  editRow(group: FormGroup) {
-    group.get('isEditable').setValue(true);
+  onSubmit(dataSource) {
+    console.log(dataSource);
   }
-
-  doneRow(group: FormGroup) {
-    group.get('isEditable').setValue(false);
-  }
-
-  saveUserDetails() {
-    console.log(this.incomeTable.value);
-  }
-
-  get getFormControls() {
-    const control = this.incomeTable.get('tableRows') as FormArray;
-    return control;
-  }
-
-  submitForm() {
-    const control = this.incomeTable.get('tableRows') as FormArray;
-    this.touchedRows = control.controls.filter(row => row.touched).map(row => row.value);
-    console.log(this.touchedRows);
-    this.incomeService.saveIncomeList(this.touchedRows).subscribe();
-  }
-
-  toggleTheme() {
-    this.mode = !this.mode;
-  }
-
-
 }

@@ -2,96 +2,35 @@
   <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Income table</h3>
   <div class="card-body">
     <div id="table" class="table-editable">
-      <form [formGroup]="incomeTable">
-        <div class="action-container">
-          <span class="table-remove" >
-            <button type="button" class="w3-button w3-blue w3-responsive" (click)="addRow()" style="margin-bottom: 5px;">Add</button>
-          </span>
-          <span class="table-remove" >
-            <button [disabled]="incomeTable.invalid" type="submit" (click)="submitForm()" class="button primary w3-green">Submit</button>
-          </span>
+
+        <h2> Income Table </h2>
+        <div style="overflow-x:auto;">
+          <button mat-button (click)="addRow()"> Add Row </button>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container *ngFor="let column of displayedFields; let i = index" [matColumnDef]="column">
+              <th mat-header-cell *matHeaderCellDef>
+                <span [style.display]=" columnSelect != i ? 'inline':'none'"> {{displayedHead[i]}} </span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <input [formControl]="element.get(column)">
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="delete">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <button arrow-div mat-button (click)="deleteRow(i)">Delete</button>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
+          <button type="submit" class="button btn-primary" (click)="onSubmit(dataSource)"> Submit </button>
         </div>
-        <table class="w3-table w3-striped w3-bordered" [ngClass]="{'table-dark': mode}">
-          <thead class="text-nowrap">
-            <th>Income Type</th>
-            <th>Current Amount</th>
-            <th>Goal Amount</th>
-            <th>Recurrence</th>
-            <th>Yearly Amount</th>
-            <th class="text-center">Actions</th>
-          </thead>
-          <tbody>
-          <ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls ; let i=index">
-            <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
-              <td>
-                <div class="ui input focus">
-                  <input type="text" formControlName="type" class="ui input focus">
-                </div>
-              </td>
-              <td>
-                <div class="ui input focus">
-                  <input type="number" formControlName="currentAmount">
-                </div>
-              </td>
-              <td>
-                <div class="ui input focus">
-                  <input type="number" formControlName="goalAmount">
-                </div>
-              </td>
-              <td>
-                <div class="ui input focus">
-                  <select formControlName="recurrence" class="ui search dropdown">
-                    <option value="DAILY">DAILY</option>
-                    <option value="WEEKLY">WEEKLY</option>
-                    <option value="BI-MONTHLY">BI-MONTHLY</option>
-                    <option value="MONTHLY">MONTHLY</option>
-                    <option value="QUARTERLY">QUARTERLY</option>
-                    <option value="SEMESTRIAL">SEMESTRIAL</option>
-                    <option value="YEARLY">YEARLY</option>
-                  </select>
-                </div>
-              </td>
-              <td>
-                <div class="ui input focus">
-                  <input type="number" formControlName="yearlyAmount" >
-                </div>
-              </td>
-              <td class="w3-left">
-                <span class="table-remove" >
-                  <button type="button" class="w3-button w3-blue w3-responsive" (click)="addRow()" style="margin-bottom: 5px;">Add</button>
-                </span>
-                  <span class="table-remove">
-                  <button type="button" size="sm" class="w3-button w3-red w3-responsive" (click)="deleteRow(i)">Remove</button>
-                </span>
-              </td>
-            </tr>
-            <tr *ngIf="!group.get('isEditable').value">
-              <td>
-                {{group.get('type').value}}
-              </td>
-              <td>
-                {{group.get('currentAmount').value}}
-              </td>
-              <td>
-                {{group.get('goalAmount').value}}
-              </td>
-              <td>
-                {{group.get('recurrence').value}}
-              </td>
-              <td>
-                {{group.get('yearlyAmount').value}}
-              </td>
-<!--              <td>-->
-<!--                <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>-->
-<!--              </td>-->
-            </tr>
-          </ng-container>
-          </tbody>
-        </table>
-      </form>
+
+
     </div>
-  </div>
-  <div>
-    {{incomeTable?.value | json}}
   </div>
 </div>
