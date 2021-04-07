@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgSwitch} from '@angular/common';
 import {IncomeHomeComponent} from './income-home/income-home.component';
 import {IncomeRoutingModule} from './income-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -29,7 +29,7 @@ import {MatTableModule} from '@angular/material/table';
     MatNativeDateModule,
     MatDatepickerModule,
     MatTableModule,
-    FormsModule
+    FormsModule,
   ]
 })
 export class IncomeModule { }

@@ -1,7 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
+import {Recurrence} from '../../shared/interfaces/recurrence';
+import {ConfigurationConstants} from '../../shared/configuration-constants';
+import {localStorageKeys} from '../../auth/constants';
 
 
 @Component({
@@ -11,13 +14,15 @@ import {IncomeService} from '../income.service';
 })
 export class IncomeFormComponent implements OnInit {
 
-  displayedColumns: string[] = ['id', 'type', 'currentAmount', 'goalAmount', 'recurrence', 'yearlyAmount', 'delete'];
-  displayedHead: string[] = ['Id', 'Type', 'Current Amount', 'Goal Amount', 'Recurrence', 'Yearly Amount'];
-  displayedFields: string[] = ['id', 'type', 'currentAmount', 'goalAmount', 'recurrence', 'yearlyAmount'];
+  displayedColumns: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount', 'delete'];
+  displayedHead: string[] = ['Type', 'Recurrence', 'Current Amount', 'Goal Amount', 'Yearly Amount'];
+  displayedFields: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount'];
+  columnsWithSelect: string[] = ['recurrence'];
   columnSelect = -1;
   formArray = new FormArray([]);
   dataSource = this.formArray.controls;
   columns: number = this.displayedFields.length;
+  recurrence = Object.keys(Recurrence);
   @Input() incomeList: IncomeDto[];
 
   constructor(private incomeService: IncomeService) {
@@ -30,10 +35,10 @@ export class IncomeFormComponent implements OnInit {
 
   addRow() {
     const newGroup = new FormGroup({});
-    this.displayedFields.forEach(x => {
-      newGroup.addControl(x, new FormControl());
+    this.displayedFields.forEach( field => {
+      newGroup.addControl(field, new FormControl('', Validators.required));
     });
-
+    newGroup.addControl('userId', new FormControl(localStorage.getItem(localStorageKeys.sub)));
     this.formArray.push(newGroup);
     this.dataSource = [...this.formArray.controls];
   }
@@ -42,7 +47,7 @@ export class IncomeFormComponent implements OnInit {
       for (const income of this.incomeList) {
         const newGroup = new FormGroup({});
         this.displayedFields.forEach(field => {
-          newGroup.addControl(field, new FormControl(income[field]));
+          newGroup.addControl(field, new FormControl(income[field], Validators.required));
         });
         this.formArray.push(newGroup);
       }
@@ -54,7 +59,8 @@ export class IncomeFormComponent implements OnInit {
     this.dataSource = [...this.formArray.controls];
   }
 
-  onSubmit(dataSource) {
+  onSubmit() {
+    console.log('submit: ', this.formArray.controls);
     const updatedIncome: IncomeDto[] = [];
     for ( const field of this.formArray.controls) {
       if (field.dirty) {
@@ -62,7 +68,15 @@ export class IncomeFormComponent implements OnInit {
       }
     }
 
-    this.incomeService.saveIncomeList(updatedIncome);
+    this.incomeService.saveIncomeList(updatedIncome).subscribe(
+      resp => {
+        console.log('save income api responded: ', resp);
+      }
+    );
 
+  }
+
+  hasSelectDropdown(column: string) {
+    return column === 'recurrence';
   }
 }

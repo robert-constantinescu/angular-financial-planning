@@ -1,11 +1,13 @@
+import {Recurrence} from '../shared/interfaces/recurrence';
+
 export interface IncomeDto {
 
  type: string;
  currentAmount: number;
  yearlyAmount: number;
- recurrence: string;
+ recurrence: Recurrence;
  goalAmount: number;
  id?: number;
- username?: string;
+ userId?: string;
 
 }

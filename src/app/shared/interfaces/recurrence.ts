@@ -1,0 +1,8 @@
+export enum Recurrence {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  QUARTERLY= 'QUARTERLY',
+  SEMESTRIAL= 'SEMESTRIAL',
+  YEARLY= 'YEARLY'
+}
