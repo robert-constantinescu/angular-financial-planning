@@ -2,14 +2,13 @@
   <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Income table</h3>
   <div class="card-body">
     <div id="table" class="table-editable">
-
         <h2> Income Table </h2>
         <div style="overflow-x:auto;">
-          <button mat-button (click)="addRow()"> Add Row </button>
+          <button mat-button (click)="addRow()" class="ui blue button"> Add Row </button>
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
             <ng-container *ngFor="let column of displayedFields; let i = index" [matColumnDef]="column">
               <th mat-header-cell *matHeaderCellDef>
-                <span [style.display]=" columnSelect != i ? 'inline':'none'"> {{displayedHead[i]}} </span>
+                <span> {{displayedHead[i]}} </span>
               </th>
               <td mat-cell *matCellDef="let element">
                 <input [formControl]="element.get(column)">
@@ -18,7 +17,7 @@
             <ng-container matColumnDef="delete">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let element; let i = index">
-                <button arrow-div mat-button (click)="deleteRow(i)">Delete</button>
+                <button mat-button (click)="deleteRow(i)" class="ui red button">Delete</button>
               </td>
             </ng-container>
 
@@ -27,10 +26,10 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
           </table>
-          <button type="submit" class="button btn-primary" (click)="onSubmit(dataSource)"> Submit </button>
+          <div>
+            <button type="submit" class="ui submit green button" (click)="onSubmit(dataSource)"> Submit </button>
+          </div>
         </div>
-
-
     </div>
   </div>
 </div>
