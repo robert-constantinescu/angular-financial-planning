@@ -8,6 +8,5 @@ export interface IncomeDto {
  recurrence: Recurrence;
  goalAmount: number;
  id?: number;
- userId?: string;
 
 }

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
 import {Recurrence} from '../../shared/interfaces/recurrence';
@@ -16,7 +16,7 @@ export class IncomeFormComponent implements OnInit {
 
   displayedColumns: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount', 'delete'];
   displayedHead: string[] = ['Type', 'Recurrence', 'Current Amount', 'Goal Amount', 'Yearly Amount'];
-  displayedFields: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount'];
+  displayedFields: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount', 'id'];
   columnsWithSelect: string[] = ['recurrence'];
   columnSelect = -1;
   formArray = new FormArray([]);
@@ -38,7 +38,6 @@ export class IncomeFormComponent implements OnInit {
     this.displayedFields.forEach( field => {
       newGroup.addControl(field, new FormControl('', Validators.required));
     });
-    newGroup.addControl('userId', new FormControl(localStorage.getItem(localStorageKeys.sub)));
     this.formArray.push(newGroup);
     this.dataSource = [...this.formArray.controls];
   }
@@ -59,10 +58,10 @@ export class IncomeFormComponent implements OnInit {
     this.dataSource = [...this.formArray.controls];
   }
 
-  onSubmit() {
-    console.log('submit: ', this.formArray.controls);
+  onSubmit(dataSource: AbstractControl[]) {
+    console.log('submit: ', dataSource);
     const updatedIncome: IncomeDto[] = [];
-    for ( const field of this.formArray.controls) {
+    for ( const field of dataSource) {
       if (field.dirty) {
         updatedIncome.push(field.value);
       }
