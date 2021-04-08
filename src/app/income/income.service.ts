@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {IncomeDto} from './income-dto';
 import {ConfigurationConstants} from '../shared/configuration-constants';
 import {Observable} from 'rxjs';
@@ -31,5 +31,21 @@ export class IncomeService {
     return this.http.get<IncomeDto[]>(`${this.incomeApi}/list`);
   }
 
+  removeIncome(removedIncomeIds: number[]) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: {
+        ids: removedIncomeIds
+      }
+    };
 
+    console.log('options: ', options);
+    return this.http.delete(`${this.incomeApi}/list`, options).subscribe(
+      response => {
+        console.log(response);
+      }
+    );
+  }
 }

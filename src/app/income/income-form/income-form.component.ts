@@ -23,6 +23,7 @@ export class IncomeFormComponent implements OnInit {
   dataSource = this.formArray.controls;
   columns: number = this.displayedFields.length;
   recurrence = Object.keys(Recurrence);
+  toRemoveIds: number[] = [];
   @Input() incomeList: IncomeDto[];
 
   constructor(private incomeService: IncomeService) {
@@ -54,11 +55,23 @@ export class IncomeFormComponent implements OnInit {
 
 
   deleteRow(index: number) {
+    this.toRemoveIds.push(this.formArray.at(index).value.id);
     this.formArray.removeAt(index);
     this.dataSource = [...this.formArray.controls];
   }
 
   onSubmit(dataSource: AbstractControl[]) {
+    this.saveIncomes(dataSource);
+    let removedIncomeIds = [];
+    if (this.toRemoveIds.length > 0) {
+      removedIncomeIds = this.toRemoveIds;
+      this.toRemoveIds = [];
+      this.incomeService.removeIncome(removedIncomeIds);
+    }
+  }
+
+
+  saveIncomes(dataSource: AbstractControl[]) {
     console.log('submit: ', dataSource);
     const updatedIncome: IncomeDto[] = [];
     for ( const field of dataSource) {
@@ -72,7 +85,6 @@ export class IncomeFormComponent implements OnInit {
         console.log('save income api responded: ', resp);
       }
     );
-
   }
 
   hasSelectDropdown(column: string) {
