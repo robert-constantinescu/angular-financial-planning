@@ -25,6 +25,17 @@ export class SignupComponent implements OnInit {
       // the third arg of FormControl is a list of ASYNCHRONOUS validators
       // [this.uniqueUsernameValidator.validate]
     ),
+    email: new FormControl('',
+      // the second arg of FormControl is a list of SYNCHRONOUS validators
+      // the SYNC validators are always checked before the ASYNC validators
+      [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.email,
+      ],
+      // the third arg of FormControl is a list of ASYNCHRONOUS validators
+      // [this.uniqueEmailValidator.validate]
+    ),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(4),

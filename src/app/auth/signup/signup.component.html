@@ -4,6 +4,8 @@
 
     <app-custom-input inputType="text" label="Username" [control]="authForm.get('username')"></app-custom-input>
     {{authForm.get('username').errors | json}} <!--this is used to debug the errors that are thrown when the user input is not valid  -->
+    <app-custom-input inputType="text" label="Email" [control]="authForm.get('email')"></app-custom-input>
+    {{authForm.get('email').errors | json}} <!--this is used to debug the errors that are thrown when the user input is not valid  -->
     <app-custom-input inputType="password" label="Password" [control]="authForm.get('password')"></app-custom-input>
     {{authForm.get('password').errors | json}}
     <app-custom-input inputType="password" label="Password Confirmation" [control]="authForm.get('passwordConfirmation')"></app-custom-input>
