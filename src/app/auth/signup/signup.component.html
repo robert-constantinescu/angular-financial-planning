@@ -1,1 +1,29 @@
-<p>signup works!</p>
+<h3>Create new account</h3>
+
+<form (ngSubmit)="onSubmit()" [formGroup]="authForm" class="ui form">
+
+    <app-custom-input inputType="text" label="Username" [control]="authForm.get('username')"></app-custom-input>
+    {{authForm.get('username').errors | json}} <!--this is used to debug the errors that are thrown when the user input is not valid  -->
+    <app-custom-input inputType="password" label="Password" [control]="authForm.get('password')"></app-custom-input>
+    {{authForm.get('password').errors | json}}
+    <app-custom-input inputType="password" label="Password Confirmation" [control]="authForm.get('passwordConfirmation')"></app-custom-input>
+    {{authForm.get('password').errors | json}}
+
+  <br>
+  <div *ngIf="authForm.get('password').touched && authForm.get('passwordConfirmation') && authForm.errors"
+  class="ui red basic label">
+    <p *ngIf="!authForm.errors.passwordsMatch && authForm.errors.passwordMatch != null">
+      Password don't match
+    </p>
+    <p *ngIf="authForm.errors.noConnection">
+      No internet connection
+    </p>
+    <p *ngIf="authForm.errors.unknownError">
+      An unknown error occurred. Sign up has failed.
+    </p>
+  </div>
+
+
+  <button class="ui submit button primary">Submit</button>
+</form>
+

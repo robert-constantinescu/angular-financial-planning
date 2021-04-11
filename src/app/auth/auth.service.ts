@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import {localStorageKeys} from './constants';
 import {BehaviorSubject} from 'rxjs';
 import {ConfigurationConstants} from '../shared/configuration-constants';
+import {BackendResponse} from "../shared/interfaces/backend-response.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,16 @@ export class AuthService {
         this.saveTokenInLocalStorage(response.access_token);
         this.signedin$.next(true);
       })
+    );
+  }
+
+  signup(formValues: SignupForm) {
+    return this.http.post<BackendResponse<AuthResponse>>(`${this.authApi}/signup`, formValues).pipe(
+      tap((response) => {
+          this.signedin$.next(true);
+          this.saveTokenInLocalStorage(response.body.access_token);
+        }
+      )
     );
   }
 
@@ -55,12 +66,31 @@ export class AuthService {
     return jwtDecode(jwtToken);
   }
 
+  validateUsername(value: string) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        username: value
+      }
+    };
+    return this.http.get<boolean>(`${this.authApi}/signup/validate`, options);
+  }
+
+
 }
 
 
 interface SigninForm {
   username: string;
   password: string;
+}
+
+interface SignupForm {
+  username: string;
+  password: string;
+  passwordConfirmation: string;
 }
 
 interface AuthResponse {
