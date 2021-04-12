@@ -18,6 +18,7 @@ export class AuthGuard implements CanLoad {
     return this.authService.signedin$.pipe(
       take(1),
       tap(authenticated => {
+        console.log('canLoad: ', authenticated);
         console.log(authenticated);
         if (!authenticated) {
           this.router.navigateByUrl('/');

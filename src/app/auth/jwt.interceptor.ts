@@ -16,10 +16,11 @@ export class JwtInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!this.authService.isSignedIn()) {
-      console.log('interceptor - signedin: ', false);
       this.authService.signedin$.next(false);
+      console.log('interceptor - willReturn: ');
       return;
     }
+    console.log('interceptor-afterIf');
     this.authService.signedin$.next(true);
     const req = request.clone({
       setHeaders: {

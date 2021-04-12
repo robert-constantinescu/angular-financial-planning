@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 })
 export class SigninComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {
+  }
 
   signinForm = new FormGroup({
     username: new FormControl(''),
@@ -18,10 +19,6 @@ export class SigninComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.authService.signedin$.subscribe( value => {
-      console.log('signin init: ', value);
-    });
-    this.router.navigateByUrl('/home');
   }
 
   onSignin() {

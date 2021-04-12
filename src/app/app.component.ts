@@ -10,13 +10,11 @@ import {BehaviorSubject} from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'angular-financial-planning';
 
-  signedin$: BehaviorSubject<boolean>;
 
   constructor(private authService: AuthService) {
-    this.signedin$ = this.authService.signedin$;
+    this.authService.isTokenValid();
   }
 
   ngOnInit() {
-    this.authService.isSignedIn();
   }
 }
