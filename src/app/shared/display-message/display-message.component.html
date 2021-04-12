@@ -1,0 +1,7 @@
+<div class="row" *ngIf="successful !== null">
+  <div class="col-xs-12">
+    <p class="alert" [ngClass]="successful ? 'alert-success' : 'alert-danger'">
+      <ng-content></ng-content>
+    </p>
+  </div>
+</div>

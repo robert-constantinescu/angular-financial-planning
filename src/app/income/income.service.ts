@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {IncomeDto} from './income-dto';
 import {ConfigurationConstants} from '../shared/configuration-constants';
 import {Observable} from 'rxjs';
-import {Recurrence} from '../shared/interfaces/recurrence';
+import {Recurrence} from '../shared/etc/recurrence';
 
 @Injectable({
   providedIn: 'root'

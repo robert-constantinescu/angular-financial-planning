@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AuthService} from '../auth.service';
 import {Router} from '@angular/router';
@@ -13,16 +13,16 @@ export class SigninComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   signinForm = new FormGroup({
-    username: new FormControl('richie'),
-    password: new FormControl('admin'),
+    username: new FormControl(''),
+    password: new FormControl(''),
   });
 
   ngOnInit(): void {
+    this.authService.signedin$.subscribe( value => {
+      console.log('signin init: ', value);
+    });
+    this.router.navigateByUrl('/home');
   }
-
-  // ngAfterViewChecked(): void {
-  //
-  // }
 
   onSignin() {
     console.log('On signin');

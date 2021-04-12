@@ -1,4 +1,4 @@
-import {Recurrence} from '../shared/interfaces/recurrence';
+import {Recurrence} from '../shared/etc/recurrence';
 
 export interface IncomeDto {
 

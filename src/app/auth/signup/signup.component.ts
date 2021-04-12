@@ -12,6 +12,8 @@ import {Router} from "@angular/router";
 })
 export class SignupComponent implements OnInit {
 
+  successfulRequest: boolean = null;
+
   authForm = new FormGroup({
     username: new FormControl('',
       // the second arg of FormControl is a list of SYNCHRONOUS validators
@@ -75,23 +77,22 @@ export class SignupComponent implements OnInit {
         // `this` like below will reference a higher context, in this case the SignupComponent
         next: (response) => {
           this.router.navigateByUrl('/home');
+          this.successfulRequest = true;
         },
         complete: () => {
           console.log('signup request was completed');
         },
         error: (err) => {
           console.log(err);
+          this.successfulRequest = false;
           if (err.status === 0) {
             this.authForm.setErrors({noConnection: true});
-          }
-          else {
+          } else {
             this.authForm.setErrors({unknown: true});
           }
         }
-
-
       }
-    )
+    );
   }
 
 }

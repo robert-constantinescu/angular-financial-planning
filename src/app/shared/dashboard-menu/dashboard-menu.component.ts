@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard-menu',
@@ -9,7 +10,7 @@ export class DashboardMenuComponent implements OnInit {
 
   mySidebar = null;
   overlayBg = null;
-  constructor() { }
+  constructor(private router: Router) { }
 
 
   ngOnInit(): void {
@@ -32,4 +33,7 @@ export class DashboardMenuComponent implements OnInit {
     }
   }
 
+  onSignUp() {
+    this.router.navigateByUrl('/signup');
+  }
 }

@@ -2,9 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
-import {Recurrence} from '../../shared/interfaces/recurrence';
+import {Recurrence} from '../../shared/etc/recurrence';
 import {ConfigurationConstants} from '../../shared/configuration-constants';
-import {localStorageKeys} from '../../auth/constants';
+import {localStorageKeys} from '../../shared/etc/constants';
 
 
 @Component({
