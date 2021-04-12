@@ -5,8 +5,8 @@ import jwtDecode, {JwtPayload} from 'jwt-decode';
 import {localStorageKeys} from '../shared/etc/constants';
 import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {ConfigurationConstants} from '../shared/configuration-constants';
-import {BackendResponse} from "../shared/etc/interfaces/backend-response.interface";
-import {Router} from "@angular/router";
+import {BackendResponse} from '../shared/etc/interfaces/backend-response.interface';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,13 @@ export class AuthService {
   signedin$ = new BehaviorSubject(null);
 
   constructor(private http: HttpClient,
-              private router: Router) { }
+              private router: Router) {
+    const isTokenValid = this.isTokenValid();
+    if (this.isTokenValid()) {
+      this.signedin$.next(isTokenValid);
+    }
+
+  }
 
   signin(formValues: SigninForm) {
     console.log('signin: ');

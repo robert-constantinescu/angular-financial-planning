@@ -11,6 +11,14 @@ import {Router} from '@angular/router';
 export class SigninComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) {
+    this.authService.isTokenValid().subscribe(
+      (value => {
+        if (value.body.isValid) {
+          this.authService.signedin$.next(value.body.isValid);
+          this.router.navigateByUrl('/home');
+        }
+      })
+    );
   }
 
   signinForm = new FormGroup({
