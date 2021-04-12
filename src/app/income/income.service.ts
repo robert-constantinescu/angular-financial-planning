@@ -4,6 +4,8 @@ import {IncomeDto} from './income-dto';
 import {ConfigurationConstants} from '../shared/configuration-constants';
 import {Observable} from 'rxjs';
 import {Recurrence} from '../shared/etc/recurrence';
+import {BackendResponse} from "../shared/etc/interfaces/backend-response.interface";
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +30,11 @@ export class IncomeService {
   }
 
   getIncomeList(): Observable<IncomeDto[]> {
-    return this.http.get<IncomeDto[]>(`${this.incomeApi}/list`);
+    return this.http.get<BackendResponse<IncomeDto[]>>(`${this.incomeApi}/list`).pipe(
+      map( value => {
+        return value.body;
+      }),
+    );
   }
 
   removeIncome(removedIncomeIds: number[]) {

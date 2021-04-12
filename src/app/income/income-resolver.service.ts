@@ -1,8 +1,8 @@
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
 import {IncomeDto} from './income-dto';
 import {IncomeService} from './income.service';
-import {EMPTY, Observable} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {EMPTY, Observable, of} from 'rxjs';
+import {catchError, map, tap} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 
 @Injectable({providedIn: 'root'})
@@ -22,6 +22,4 @@ export class IncomeResolverService implements Resolve<IncomeDto[]> {
       })
     );
   }
-
-
 }

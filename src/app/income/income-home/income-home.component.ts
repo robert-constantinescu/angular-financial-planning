@@ -20,11 +20,10 @@ export class IncomeHomeComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private activeRoute: ActivatedRoute) {
-    this.activeRoute.data.subscribe( (data) => {
-      console.log(data.incomeList);
-      this.incomeList = data.incomeList;
+    this.activeRoute.data.subscribe((data) => {
+        this.incomeList = data.incomeList;
       }
-    )
+    );
   }
 
   ngOnInit(): void {

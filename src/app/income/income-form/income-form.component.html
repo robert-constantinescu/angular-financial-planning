@@ -15,7 +15,7 @@
                 <div *ngSwitchCase="true">
                   <td mat-cell *matCellDef="let element">
                     <select [formControl]="element.get(column)">
-                      <option *ngFor="let R of recurrence">{{ R }}</option>
+                      <option *ngFor="let R of recurrence" [ngValue]="R" >{{ R }}</option>
                     </select>
                   </td>
                 </div>
