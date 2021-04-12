@@ -14,15 +14,17 @@ import {Router} from "@angular/router";
 export class AuthService {
 
   private authApi = `${ConfigurationConstants.BASE_URL}/auth`;
+
   signedin$ = new BehaviorSubject(null);
 
   constructor(private http: HttpClient,
               private router: Router) { }
 
   signin(formValues: SigninForm) {
+    console.log('signin: ');
     return this.http.post<BackendResponse<AuthResponse>>(`${this.authApi}/login`, formValues).pipe(
       tap((response) => {
-        console.log('signin: ');
+        console.log('signin - TAP: ');
         this.saveTokenInLocalStorage(response.body.access_token);
         this.signedin$.next(true);
       })
@@ -58,9 +60,11 @@ export class AuthService {
     const currentTime = Date.now();
     const jwtExpTime = this.getJwtExpTimeMillis();
     if (currentTime > jwtExpTime) {
+      console.log('isSignedIn - false: ');
       localStorage.removeItem(localStorageKeys.jwt);
       return false;
     }
+    console.log('isSignedIn - true: ');
     return true;
   }
 

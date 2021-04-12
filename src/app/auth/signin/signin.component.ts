@@ -25,6 +25,7 @@ export class SigninComponent implements OnInit {
     console.log('On signin');
     this.authService.signin(this.signinForm.value).subscribe(
       value => {
+        console.log('On signin: ', value);
         this.router.navigateByUrl('/home');
       }
     );
