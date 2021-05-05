@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule, NgSwitch} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {IncomeHomeComponent} from './income-home/income-home.component';
 import {IncomeRoutingModule} from './income-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -8,11 +8,10 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatDatepicker, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
-import {AppModule} from '../app.module';
 import {MatTableModule} from '@angular/material/table';
+import {ToastrModule} from "ngx-toastr";
 
 
 @NgModule({
@@ -30,6 +29,7 @@ import {MatTableModule} from '@angular/material/table';
     MatDatepickerModule,
     MatTableModule,
     FormsModule,
+    ToastrModule.forRoot()
   ]
 })
 export class IncomeModule { }

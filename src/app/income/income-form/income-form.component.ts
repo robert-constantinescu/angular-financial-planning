@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
 import {Recurrence} from '../../shared/etc/recurrence';
-import {ConfigurationConstants} from '../../shared/configuration-constants';
-import {localStorageKeys} from '../../shared/etc/constants';
+import {ToastrService} from "ngx-toastr";
 
 
 @Component({
@@ -25,8 +24,11 @@ export class IncomeFormComponent implements OnInit {
   recurrence = Object.keys(Recurrence);
   toRemoveIds: number[] = [];
   @Input() incomeList: IncomeDto[];
+  hideSuccessMessage = false;
 
-  constructor(private incomeService: IncomeService) {
+
+  constructor(private incomeService: IncomeService,
+              private toastrService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -36,7 +38,7 @@ export class IncomeFormComponent implements OnInit {
 
   addRow() {
     const newGroup = new FormGroup({});
-    this.displayedFields.forEach( field => {
+    this.displayedFields.forEach(field => {
       newGroup.addControl(field, new FormControl('', Validators.required));
     });
     this.formArray.push(newGroup);
@@ -44,13 +46,13 @@ export class IncomeFormComponent implements OnInit {
   }
 
   addDataInTable() {
-      for (const income of this.incomeList) {
-        const newGroup = new FormGroup({});
-        this.displayedFields.forEach(field => {
-          newGroup.addControl(field, new FormControl(income[field], Validators.required));
-        });
-        this.formArray.push(newGroup);
-      }
+    for (const income of this.incomeList) {
+      const newGroup = new FormGroup({});
+      this.displayedFields.forEach(field => {
+        newGroup.addControl(field, new FormControl(income[field], Validators.required));
+      });
+      this.formArray.push(newGroup);
+    }
   }
 
 
@@ -61,6 +63,7 @@ export class IncomeFormComponent implements OnInit {
   }
 
   onSubmit(dataSource: AbstractControl[]) {
+    this.FadeOutSuccessMsg();
     this.saveIncomes(dataSource);
     let removedIncomeIds = [];
     if (this.toRemoveIds.length > 0) {
@@ -68,26 +71,44 @@ export class IncomeFormComponent implements OnInit {
       this.toRemoveIds = [];
       this.incomeService.removeIncome(removedIncomeIds);
     }
+    this.formArray.markAsPristine();
   }
 
 
   saveIncomes(dataSource: AbstractControl[]) {
     console.log('submit: ', dataSource);
     const updatedIncome: IncomeDto[] = [];
-    for ( const field of dataSource) {
+    for (const field of dataSource) {
       if (field.dirty) {
         updatedIncome.push(field.value);
       }
     }
 
     this.incomeService.saveIncomeList(updatedIncome).subscribe(
-      resp => {
-        console.log('save income api responded: ', resp);
+      {
+        next: resp => {
+          console.log('save income api responded: ', resp);
+          this.toastrService.success('Incomes were saved successfully', 'Success!');
+        },
+        complete: () => {
+          console.log('the form was PRISTINED');
+          this.formArray.markAsPristine();
+        },
+        error: err => {
+          console.log('this error was catched in the saveIncomeList" ', err);
+          this.toastrService.error(err.message, 'Something went wrong!')
+        }
       }
     );
   }
 
   hasSelectDropdown(column: string) {
     return column === 'recurrence';
+  }
+
+  FadeOutSuccessMsg() {
+    setTimeout( () => {
+      this.hideSuccessMessage = true;
+    }, 4000);
   }
 }
