@@ -5,7 +5,6 @@ import {IncomeService} from '../income.service';
 import {Recurrence} from '../../shared/etc/recurrence';
 import {ToastrService} from "ngx-toastr";
 
-
 @Component({
   selector: 'app-income-form',
   templateUrl: './income-form.component.html',
@@ -31,6 +30,7 @@ export class IncomeFormComponent implements OnInit {
               private toastrService: ToastrService) {
   }
 
+
   ngOnInit(): void {
     console.log(this.incomeList);
     this.addDataInTable();
@@ -41,6 +41,7 @@ export class IncomeFormComponent implements OnInit {
     this.displayedFields.forEach(field => {
       newGroup.addControl(field, new FormControl('', Validators.required));
     });
+    newGroup.controls['id'].setValue(0);
     this.formArray.push(newGroup);
     this.dataSource = [...this.formArray.controls];
   }
@@ -63,7 +64,10 @@ export class IncomeFormComponent implements OnInit {
   }
 
   onSubmit(dataSource: AbstractControl[]) {
-    this.FadeOutSuccessMsg();
+    if (!this.formArray.dirty) {
+      this.toastrService.info('The form was not modified', 'INFO')
+      return;
+    }
     this.saveIncomes(dataSource);
     let removedIncomeIds = [];
     if (this.toRemoveIds.length > 0) {
@@ -106,9 +110,23 @@ export class IncomeFormComponent implements OnInit {
     return column === 'recurrence';
   }
 
+
   FadeOutSuccessMsg() {
     setTimeout( () => {
       this.hideSuccessMessage = true;
     }, 4000);
+  }
+
+  updateYearlyAmount(row: FormGroup) {
+    console.log('logChanges')
+    const currentAmount = row.get('currentAmount').value
+    console.log(`recurrence: ${row.get('recurrence').value}, value: ${Recurrence[row.get('recurrence').value]}`)
+    row.get('recurrence').valueChanges.subscribe(
+      (recurrence) => {
+        let recurrenceValue = Recurrence[recurrence]
+        row.get('yearlyAmount').setValue(currentAmount * recurrenceValue)
+      }
+    );
+
   }
 }

@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   signin(formValues: SigninForm) {
-    console.log('signin: ');
+    console.log(`signin: ${this.authApi}/login`);
     return this.http.post<BackendResponse<AuthResponse>>(`${this.authApi}/login`, formValues).pipe(
       tap((response) => {
         console.log('signin - TAP: ');
