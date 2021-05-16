@@ -36,27 +36,17 @@ export class IncomeFormComponent implements OnInit {
     this.addDataInTable();
   }
 
-  private createForm() {
-    this.incomeForm = this.formBuilder.group(
-      {
-        incomeArray: this.formBuilder.array([
-          this.createNewRow()
-        ])
-      }
-    );
-  }
-
-  private createNewRow(): FormGroup {
-    const newGroup = new FormGroup({});
-    this.allIncomeControls.forEach(field => {
-      newGroup.addControl(field, new FormControl('', Validators.required));
-    });
-    newGroup.controls['id'].setValue(0);
-    return newGroup;
+  get incomeFormArray(): FormArray {
+    return this.incomeForm.get('incomeArray') as FormArray
   }
 
   addRow(): void {
     this.incomeFormArray.push(this.createNewRow());
+  }
+
+  deleteRow(index: number) {
+    this.toRemoveIds.push(this.incomeFormArray.at(index).value.id);
+    this.incomeFormArray.removeAt(index);
   }
 
   addDataInTable() {
@@ -67,15 +57,6 @@ export class IncomeFormComponent implements OnInit {
       });
       this.incomeFormArray.insert(0, newGroup);
     }
-  }
-
-  get incomeFormArray(): FormArray {
-    return this.incomeForm.get('incomeArray') as FormArray
-  }
-
-  deleteRow(index: number) {
-    this.toRemoveIds.push(this.incomeFormArray.at(index).value.id);
-    this.incomeFormArray.removeAt(index);
   }
 
   onSubmit() {
@@ -122,10 +103,6 @@ export class IncomeFormComponent implements OnInit {
     );
   }
 
-  hasSelectDropdown(column: string) {
-    return column === 'recurrence';
-  }
-
    updateYearlyAmount(row: AbstractControl) {
     const recurrence = Recurrence[row.get('recurrence').value];
     const currentAmount = row.get('currentAmount').value;
@@ -135,6 +112,27 @@ export class IncomeFormComponent implements OnInit {
     // console.log('yearlyAmount: ', yearlyAmount)
 
     row.get('yearlyAmount').setValue(yearlyAmount)
+  }
+
+  private createForm() {
+    this.incomeForm = this.formBuilder.group(
+      {
+        incomeArray: this.formBuilder.array([])
+      }
+    );
+  }
+
+  private createNewRow(): FormGroup {
+    const newGroup = new FormGroup({});
+    this.allIncomeControls.forEach(field => {
+      newGroup.addControl(field, new FormControl('', Validators.required));
+    });
+    newGroup.controls['id'].setValue(0);
+    return newGroup;
+  }
+
+  hasSelectDropdown(column: string) {
+    return column === 'recurrence';
   }
 
   FadeOutSuccessMsg() {
