@@ -4,14 +4,8 @@ import {IncomeHomeComponent} from './income-home/income-home.component';
 import {IncomeRoutingModule} from './income-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IncomeFormComponent} from './income-form/income-form.component';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSelectModule} from '@angular/material/select';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
-import {MatTableModule} from '@angular/material/table';
 import {ToastrModule} from "ngx-toastr";
+import {TableModule} from "primeng/table";
 
 
 @NgModule({
@@ -21,14 +15,8 @@ import {ToastrModule} from "ngx-toastr";
     CommonModule,
     IncomeRoutingModule,
     ReactiveFormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatIconModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatTableModule,
     FormsModule,
+    TableModule,
     ToastrModule.forRoot()
   ]
 })

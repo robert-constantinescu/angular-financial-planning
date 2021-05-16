@@ -1,9 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators, FormArray, AbstractControl, Form} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
 import {Recurrence} from '../../shared/etc/recurrence';
 import {ToastrService} from "ngx-toastr";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-income-form',
@@ -12,79 +13,94 @@ import {ToastrService} from "ngx-toastr";
 })
 export class IncomeFormComponent implements OnInit {
 
-  displayedColumns: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount', 'delete'];
-  displayedHead: string[] = ['Type', 'Recurrence', 'Current Amount', 'Goal Amount', 'Yearly Amount'];
-  displayedFields: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount', 'id'];
-  columnsWithSelect: string[] = ['recurrence'];
-  columnSelect = -1;
-  formArray = new FormArray([]);
-  dataSource = this.formArray.controls;
-  columns: number = this.displayedFields.length;
-  recurrence = Object.keys(Recurrence);
-  toRemoveIds: number[] = [];
   @Input() incomeList: IncomeDto[];
+  incomeForm: FormGroup;
+  columns: string[];
+  allIncomeControls: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount', 'id'];
+  displayedControls: string[] = ['type', 'recurrence', 'currentAmount', 'goalAmount', 'yearlyAmount'];
+  recurrence = Object.keys(Recurrence);
   hideSuccessMessage = false;
+  toRemoveIds: number[] = [];
 
 
   constructor(private incomeService: IncomeService,
-              private toastrService: ToastrService) {
+              private toastrService: ToastrService,
+              private formBuilder: FormBuilder) {
+    this.columns = ['Type', 'Recurrence', 'Current Amount', 'Goal Amount', 'Yearly Amount'];
   }
 
 
   ngOnInit(): void {
-    console.log(this.incomeList);
+    this.createForm();
+    console.log(this.incomeFormArray)
     this.addDataInTable();
   }
 
-  addRow() {
+  private createForm() {
+    this.incomeForm = this.formBuilder.group(
+      {
+        incomeArray: this.formBuilder.array([
+          this.createNewRow()
+        ])
+      }
+    );
+  }
+
+  private createNewRow(): FormGroup {
     const newGroup = new FormGroup({});
-    this.displayedFields.forEach(field => {
+    this.allIncomeControls.forEach(field => {
       newGroup.addControl(field, new FormControl('', Validators.required));
     });
     newGroup.controls['id'].setValue(0);
-    this.formArray.push(newGroup);
-    this.dataSource = [...this.formArray.controls];
+    return newGroup;
+  }
+
+  addRow(): void {
+    this.incomeFormArray.push(this.createNewRow());
   }
 
   addDataInTable() {
     for (const income of this.incomeList) {
       const newGroup = new FormGroup({});
-      this.displayedFields.forEach(field => {
+      this.allIncomeControls.forEach(field => {
         newGroup.addControl(field, new FormControl(income[field], Validators.required));
       });
-      this.formArray.push(newGroup);
+      this.incomeFormArray.insert(0, newGroup);
     }
   }
 
+  get incomeFormArray(): FormArray {
+    return this.incomeForm.get('incomeArray') as FormArray
+  }
 
   deleteRow(index: number) {
-    this.toRemoveIds.push(this.formArray.at(index).value.id);
-    this.formArray.removeAt(index);
-    this.dataSource = [...this.formArray.controls];
+    this.toRemoveIds.push(this.incomeFormArray.at(index).value.id);
+    this.incomeFormArray.removeAt(index);
   }
 
-  onSubmit(dataSource: AbstractControl[]) {
-    if (!this.formArray.dirty) {
-      this.toastrService.info('The form was not modified', 'INFO')
+  onSubmit() {
+    if (!this.incomeFormArray.dirty) {
+      this.toastrService.info('The form was NOT modified', 'INFO')
       return;
     }
-    this.saveIncomes(dataSource);
+    this.saveIncomes(this.incomeFormArray);
     let removedIncomeIds = [];
     if (this.toRemoveIds.length > 0) {
       removedIncomeIds = this.toRemoveIds;
       this.toRemoveIds = [];
       this.incomeService.removeIncome(removedIncomeIds);
     }
-    this.formArray.markAsPristine();
+    this.incomeForm.markAsPristine();
   }
 
-
-  saveIncomes(dataSource: AbstractControl[]) {
-    console.log('submit: ', dataSource);
+  saveIncomes(incomeFormArray: FormArray) {
+    console.log('submit: ', incomeFormArray);
     const updatedIncome: IncomeDto[] = [];
-    for (const field of dataSource) {
-      if (field.dirty) {
-        updatedIncome.push(field.value);
+    console.log('incomeFormArray.controls: ', incomeFormArray.controls)
+    for (const control of incomeFormArray.controls) {
+      console.log('control: ', control)
+      if (control.dirty) {
+        updatedIncome.push(control.value);
       }
     }
 
@@ -96,7 +112,7 @@ export class IncomeFormComponent implements OnInit {
         },
         complete: () => {
           console.log('the form was PRISTINED');
-          this.formArray.markAsPristine();
+          this.incomeForm.markAsPristine();
         },
         error: err => {
           console.log('this error was catched in the saveIncomeList" ', err);
@@ -110,23 +126,21 @@ export class IncomeFormComponent implements OnInit {
     return column === 'recurrence';
   }
 
+   updateYearlyAmount(row: AbstractControl) {
+    const recurrence = Recurrence[row.get('recurrence').value];
+    const currentAmount = row.get('currentAmount').value;
+    const yearlyAmount = recurrence * currentAmount;
+    // console.log('recurrence: ', recurrence)
+    // console.log('currentAmount: ', currentAmount)
+    // console.log('yearlyAmount: ', yearlyAmount)
+
+    row.get('yearlyAmount').setValue(yearlyAmount)
+  }
 
   FadeOutSuccessMsg() {
     setTimeout( () => {
       this.hideSuccessMessage = true;
-    }, 4000);
+    }, 7000);
   }
 
-  updateYearlyAmount(row: FormGroup) {
-    console.log('logChanges')
-    const currentAmount = row.get('currentAmount').value
-    console.log(`recurrence: ${row.get('recurrence').value}, value: ${Recurrence[row.get('recurrence').value]}`)
-    row.get('recurrence').valueChanges.subscribe(
-      (recurrence) => {
-        let recurrenceValue = Recurrence[recurrence]
-        row.get('yearlyAmount').setValue(currentAmount * recurrenceValue)
-      }
-    );
-
-  }
 }

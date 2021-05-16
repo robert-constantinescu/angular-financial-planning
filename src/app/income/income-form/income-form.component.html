@@ -12,47 +12,92 @@
     </div>
 
 
-    <div id="table" class="table-editable">
-        <h2> Income Table </h2>
-        <div style="overflow-x:auto;">
-          <button mat-button (click)="addRow()" class="ui blue button"> Add Row </button>
-          <span>{{formArray?.value | json}}</span>
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
-            <ng-container *ngFor="let column of displayedFields; let i = index" [matColumnDef]="column">
-                <th mat-header-cell *matHeaderCellDef>
-                  <span> {{displayedHead[i]}} </span>
-                </th>
-              <div [ngSwitch]="hasSelectDropdown(column)">
-                <div *ngSwitchCase="true">
-                  <td mat-cell *matCellDef="let element">
-                    <select [formControl]="element.get(column)">
-                      <option *ngFor="let R of recurrence" [ngValue]="R" >{{ R }}</option>
+    <form [formGroup]="incomeForm">
+      <button class="btn btn-success" (click)="addRow()"> Add Row</button>
+      <p-table [value]="incomeFormArray.controls" [responsive]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <ng-container *ngFor="let column of columns">
+              <td>{{column}}</td>
+            </ng-container>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+          <ng-container formArrayName="incomeArray">
+            <tr [formGroupName]="rowIndex">
+              <td  *ngFor="let control of displayedControls" [ngSwitch]="hasSelectDropdown(control)">
+                <div>
+                  <div *ngSwitchCase="true">
+                    <select formControlName="{{control}}" (change)="updateYearlyAmount(rowData)" >
+                      <option *ngFor="let r of recurrence">{{r}}</option>
                     </select>
-                  </td>
+                  </div>
+                  <div *ngSwitchDefault>
+                    <input type="text" class="form-control form-control-sm" formControlName="{{control}}" (change)="updateYearlyAmount(rowData)">
+                  </div>
                 </div>
-                <div *ngSwitchDefault>
-                  <td mat-cell *matCellDef="let element">
-                    <input [formControl]="element.get(column)">
-                  </td>
-                </div>
-              </div>
-            </ng-container>
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let element; let i = index">
-                <button mat-button (click)="deleteRow(i)" class="ui red button">Delete</button>
               </td>
-            </ng-container>
-
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (input)="updateYearlyAmount(row)"></tr>
-
-          </table>
-          <div>
-            <button type="submit" class="ui submit green button" (click)="onSubmit(dataSource)"> Submit </button>
-          </div>
+              <button class="btn btn-danger" (click)="deleteRow(rowIndex)"> Delete </button>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </p-table>
+        <div>
+          <button type="submit" class="ui submit blue button" (click)="onSubmit()"> Submit </button>
         </div>
-    </div>
+    </form>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+<!--    <div id="table" class="table-editable">-->
+<!--        <h2> Income Table </h2>-->
+<!--        <div style="overflow-x:auto;">-->
+<!--          <button mat-button (click)="addRow()" class="ui blue button"> Add Row </button>-->
+<!--          <span>{{formArray?.value | json}}</span>-->
+<!--          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >-->
+<!--            <ng-container *ngFor="let column of displayedFields; let i = index" [matColumnDef]="column">-->
+<!--                <th mat-header-cell *matHeaderCellDef>-->
+<!--                  <span> {{displayedHead[i]}} test </span>-->
+<!--                </th>-->
+<!--              <div [ngSwitch]="hasSelectDropdown(column)">-->
+<!--                <div *ngSwitchCase="true">-->
+<!--                  <td mat-cell *matCellDef="let element">-->
+<!--                    <select [formControl]="element.get(column)">-->
+<!--                      <option *ngFor="let R of recurrence" [ngValue]="R" >{{ R }}</option>-->
+<!--                    </select>-->
+<!--                  </td>-->
+<!--                </div>-->
+<!--                <div *ngSwitchDefault>-->
+<!--                  <td mat-cell *matCellDef="let element">-->
+<!--                    <input [formControl]="element.get(column)">-->
+<!--                  </td>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
+<!--            <ng-container matColumnDef="delete">-->
+<!--              <th mat-header-cell *matHeaderCellDef>Actions</th>-->
+<!--              <td mat-cell *matCellDef="let element; let i = index">-->
+<!--                <button mat-button (click)="deleteRow(i)" class="ui red button">Delete</button>-->
+<!--              </td>-->
+<!--            </ng-container>-->
+
+
+<!--            <tr mat-header-row *matHeaderRowDef="displayedColumns">Test 2</tr>-->
+<!--            <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (input)="updateYearlyAmount(row)"></tr>-->
+
+<!--          </table>-->
+<!--          <div>-->
+<!--            <button type="submit" class="ui submit green button" (click)="onSubmit(dataSource)"> Submit </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--    </div>-->
