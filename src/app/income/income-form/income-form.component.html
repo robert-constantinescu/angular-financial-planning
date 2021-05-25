@@ -13,7 +13,7 @@
 
 
     <form [formGroup]="incomeForm">
-      <button class="btn btn-success" (click)="addRow()"> Add Row</button>
+      <button type="button" class="btn btn-success" (click)="addRow($event)"> Add Row </button>
       <p-table [value]="incomeFormArray.controls" [responsive]="true">
         <ng-template pTemplate="header">
           <tr>
@@ -22,28 +22,31 @@
             </ng-container>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" >
           <ng-container formArrayName="incomeArray">
-            <tr [formGroupName]="rowIndex">
-              <td  *ngFor="let control of displayedControls" [ngSwitch]="hasSelectDropdown(control)">
+            <tr [formGroupName]="rowIndex" (change)="updateYearlyAmount(rowData)">
+              <td  *ngFor="let control of displayedControls" [ngSwitch]="control">
                 <div>
-                  <div *ngSwitchCase="true">
-                    <select formControlName="{{control}}" (change)="updateYearlyAmount(rowData)">
+                  <div *ngSwitchCase="'recurrence'">
+                    <select formControlName="{{control}}">
                       <option *ngFor="let r of recurrence" [ngValue]="r">{{r}}</option>
                     </select>
                   </div>
+                  <div *ngSwitchCase="'type'">
+                    <input type="text" class="form-control form-control-sm" formControlName="{{control}}" >
+                  </div>
                   <div *ngSwitchDefault>
-                    <input type="text" class="form-control form-control-sm" formControlName="{{control}}" (change)="updateYearlyAmount(rowData)">
+                    <input type="number" class="form-control form-control-sm" formControlName="{{control}}" >
                   </div>
                 </div>
               </td>
-              <button class="btn btn-danger" (click)="deleteRow(rowIndex)"> Delete </button>
+              <button type="button" class="btn btn-danger" (click)="deleteRow(rowIndex)"> Delete </button>
             </tr>
           </ng-container>
         </ng-template>
       </p-table>
         <div>
-          <button type="submit" class="ui submit blue button" (click)="onSubmit()"> Save </button>
+          <button type="button" class="ui submit blue button" (click)="onSubmit()"> Save </button>
         </div>
     </form>
   </div>

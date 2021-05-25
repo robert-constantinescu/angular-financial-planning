@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators, FormArray, AbstractControl, Form} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IncomeDto} from '../income-dto';
 import {IncomeService} from '../income.service';
 import {Recurrence} from '../../shared/etc/recurrence';
 import {ToastrService} from "ngx-toastr";
-import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-income-form',
@@ -54,9 +53,7 @@ export class IncomeFormComponent implements OnInit {
       const newGroup = new FormGroup({});
       this.allIncomeControls.forEach(field => {
         newGroup.addControl(field, new FormControl(income[field], Validators.required));
-        console.log('income[field]: ', income[field]);
       });
-      newGroup.addControl('recurrence', new FormControl(Recurrence.MONTHLY, Validators.required));
       this.incomeFormArray.insert(0, newGroup);
     }
   }
@@ -109,9 +106,6 @@ export class IncomeFormComponent implements OnInit {
     const recurrence = Recurrence[row.get('recurrence').value];
     const currentAmount = row.get('currentAmount').value;
     const yearlyAmount = recurrence * currentAmount;
-    // console.log('recurrence: ', recurrence)
-    // console.log('currentAmount: ', currentAmount)
-    // console.log('yearlyAmount: ', yearlyAmount)
 
     row.get('yearlyAmount').setValue(yearlyAmount)
   }
@@ -133,9 +127,6 @@ export class IncomeFormComponent implements OnInit {
     return newGroup;
   }
 
-  hasSelectDropdown(column: string) {
-    return column === 'recurrence';
-  }
 
   FadeOutSuccessMsg() {
     setTimeout( () => {
