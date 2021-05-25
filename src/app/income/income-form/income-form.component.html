@@ -13,7 +13,7 @@
 
 
     <form [formGroup]="incomeForm">
-      <button type="button" class="btn btn-success" (click)="addRow($event)"> Add Row </button>
+      <button type="button" class="btn btn-success" (click)="addRow()"> Add Row </button>
       <p-table [value]="incomeFormArray.controls" [responsive]="true">
         <ng-template pTemplate="header">
           <tr>
