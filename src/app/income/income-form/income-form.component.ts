@@ -54,13 +54,15 @@ export class IncomeFormComponent implements OnInit {
       const newGroup = new FormGroup({});
       this.allIncomeControls.forEach(field => {
         newGroup.addControl(field, new FormControl(income[field], Validators.required));
+        console.log('income[field]: ', income[field]);
       });
+      newGroup.addControl('recurrence', new FormControl(Recurrence.MONTHLY, Validators.required));
       this.incomeFormArray.insert(0, newGroup);
     }
   }
 
   onSubmit() {
-    if (!this.incomeFormArray.dirty) {
+    if (!this.incomeFormArray.dirty && this.toRemoveIds.length === 0) {
       this.toastrService.info('The form was NOT modified', 'INFO')
       return;
     }

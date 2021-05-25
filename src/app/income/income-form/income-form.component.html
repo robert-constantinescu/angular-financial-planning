@@ -28,8 +28,8 @@
               <td  *ngFor="let control of displayedControls" [ngSwitch]="hasSelectDropdown(control)">
                 <div>
                   <div *ngSwitchCase="true">
-                    <select formControlName="{{control}}" (change)="updateYearlyAmount(rowData)" >
-                      <option *ngFor="let r of recurrence">{{r}}</option>
+                    <select formControlName="{{control}}" (change)="updateYearlyAmount(rowData)">
+                      <option *ngFor="let r of recurrence" [ngValue]="r">{{r}}</option>
                     </select>
                   </div>
                   <div *ngSwitchDefault>
@@ -43,7 +43,7 @@
         </ng-template>
       </p-table>
         <div>
-          <button type="submit" class="ui submit blue button" (click)="onSubmit()"> Submit </button>
+          <button type="submit" class="ui submit blue button" (click)="onSubmit()"> Save </button>
         </div>
     </form>
   </div>
